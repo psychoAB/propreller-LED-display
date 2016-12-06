@@ -1,3 +1,4 @@
 usbdrv/
 *.o
+*.elf
 *.hex
