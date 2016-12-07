@@ -4,10 +4,10 @@
 void init_led_board()
 {
     DDRD |= (1 << PD3);
-
     DDRC |= PORTC_LED;
     DDRB |= PORTB_LED;
-    
+
+    PORTD |= (1 << PD3);
     PORTC = PORTC_LED;
     PORTB = PORTB_LED;
 }
