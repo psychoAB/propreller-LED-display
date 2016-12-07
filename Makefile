@@ -1,7 +1,8 @@
 TARGET=main
 MCU=atmega168
 F_CPU=16000000
-CFLAGS=-mmcu=$(MCU) -O -DF_CPU=$(F_CPU)
+CFLAGS=-mmcu=$(MCU) -O -DF_CPU=$(F_CPU) -Ilib
+OBJS= led_board.o
 
 .SECONDARY:
 
@@ -18,8 +19,8 @@ clean:
 %.hex: %.elf
 	avr-objcopy -j .text -j .data -O ihex $< $@
 
-%.elf: %.o
-	avr-gcc $(CFLAGS) -o $@ $<
+%.elf: %.o $(OBJS)
+	avr-gcc $(CFLAGS) -o $@ $^
 
 %.o: %.c
 	avr-gcc $(CFLAGS) -c -o $@ $<

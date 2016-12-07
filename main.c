@@ -1,24 +1,15 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "led_board.h"
+
 int main(void)
 {
-    DDRD |= (1 << PD3);
-    
-    uint8_t ledState = 0;
+    init_led_board();
 
     while(1)
     {
-        if(ledState)
-        {
-            PORTD |= (1 << PD3);
-        }
-        else
-        {
-            PORTD &= !(1 << PD3);
-        }
-        ledState = !ledState;
-        _delay_ms(500);
+        set_led_column(159);
     }
 
     return 0;
