@@ -6,10 +6,20 @@
 #include "led_board.h"
 #include "eeprom.h"
 #include "usbdrv.h"
+#include "timer.h"
+#include "pt.h"
+
+#define PT_DELAY(pt, ms, ts) \
+    ts = timer_millis(); \
+    PT_WAIT_WHILE(pt, timer_millis() - ts < (ms));
 
 #define COLUMN_PER_CHAR 5
 #define RQ_EEPROM_UPDATE 0
 #define RQ_EEPROM_READ 1
+
+struct pt pt_display_text;
+
+uint8_t text_length, current_char, current_column;
 
 usbMsgLen_t usbFunctionSetup(uint8_t data[8])
 {
@@ -40,26 +50,33 @@ usbMsgLen_t usbFunctionSetup(uint8_t data[8])
     return 0;
 }
 
-void display_text()
+PT_THREAD(display_text(struct pt* pt))
 {
-    uint8_t text_legnth = eeprom_read((uint8_t *)0);
+    static uint32_t ts;
 
-    uint8_t current_char;
-    for(current_char = 0; current_char < text_legnth; current_char++)
-    {
-        uint8_t current_column;
-        for(current_column = 1; current_column <= COLUMN_PER_CHAR; current_column++)
-        {
-            set_led_column(eeprom_read((uint8_t *) (uintptr_t)current_column + COLUMN_PER_CHAR * current_char));
-            _delay_ms((int)(1.0 / 16 / 20 * 1000));
-        }
+    PT_BEGIN(pt);
     
-        for(current_column = 1; current_column <= COLUMN_PER_CHAR; current_column++)
+    while(1)
+    {
+        text_length = eeprom_read((uint8_t *)0);
+
+        for(current_char = 0; current_char < text_length; current_char++)
         {
-            set_led_column(0);
-            _delay_ms((int)(1.0 / 16 / 20 * 1000));
+            for(current_column = 1; current_column <= COLUMN_PER_CHAR; current_column++)
+            {
+                set_led_column(eeprom_read((uint8_t *) (uintptr_t)current_column + COLUMN_PER_CHAR * current_char));
+                PT_DELAY(pt, (int)(1.0 / 16 / 20 * 1000), ts);
+            }
+        
+            for(current_column = 1; current_column <= COLUMN_PER_CHAR; current_column++)
+            {
+                set_led_column(0);
+                PT_DELAY(pt, (int)(1.0 / 16 / 20 * 1000), ts);
+            }
         }
     }
+
+    PT_END(pt);
 }
 
 int main(void)
@@ -74,10 +91,14 @@ int main(void)
 
     sei();
 
+    timer_init();
+    
+    PT_INIT(&pt_display_text);
+
     while(1)
     {
         usbPoll();
-        display_text();
+        display_text(&pt_display_text);
     }
 
     return 0;

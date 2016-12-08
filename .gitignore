@@ -1,5 +1,7 @@
 usbdrv/
 usbconfig.h
+pt-1.4/
+timer.*
 *.o
 *.elf
 *.hex
