@@ -1,8 +1,8 @@
 TARGET=main
 MCU=atmega168
 F_CPU=16000000
-CFLAGS=-mmcu=$(MCU) -O -DF_CPU=$(F_CPU) -Ilib
-OBJS= led_board.o
+CFLAGS=-mmcu=$(MCU) -O -DF_CPU=$(F_CPU) -Ilib -Iusbdrv -I.
+OBJS= led_board.o eeprom.o usbdrv/usbdrv.o usbdrv/usbdrvasm.o
 
 .SECONDARY:
 
