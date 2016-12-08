@@ -79,7 +79,7 @@ PT_THREAD(display_text(struct pt* pt))
     PT_END(pt);
 }
 
-int main(void)
+void init_mcu()
 {
     init_led_board();
 
@@ -94,6 +94,11 @@ int main(void)
     timer_init();
     
     PT_INIT(&pt_display_text);
+}
+
+int main(void)
+{
+    init_mcu();
 
     while(1)
     {
