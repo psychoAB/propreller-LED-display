@@ -17,10 +17,10 @@ ___
 
 ### info:
     
-###### lib/eeprom.h
+###### include/eeprom.h
 * containing definition in eeprom.c
 
-###### lib/led_board.h
+###### include/led_board.h
 * containing definition in led_board.c
 
 ###### Makefile
