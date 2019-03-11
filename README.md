@@ -1,6 +1,6 @@
 # propreller-LED-display
 
-##### Practicum-In-CPE prject's hardware code
+###### Practicum-In-CPE prject's hardware code
 
 #### Team name:
 ###### gg ez
